@@ -13,7 +13,7 @@ import adomlogistics.service.DeliveryService;
 import adomlogistics.service.DispatcherService;
 import adomlogistics.service.MaintenanceService;
 import adomlogistics.service.VehicleService;
-import adomlogistics.service.FileSaver;
+import adomlogistics.service.FileSaverService;
 import adomlogistics.storage.Database;
 
 import java.sql.SQLException;
@@ -23,6 +23,7 @@ public class Main {
     private static VehicleService vehicleService;
     private static DeliveryService deliveryService;
     private static MaintenanceService maintenanceService;
+    private static FileSaverService fileSaverService;
     private static Database database;
     private static Scanner scanner = new Scanner(System.in);
 
@@ -473,7 +474,7 @@ public class Main {
                     System.out.print("\n Do you want to save all fleet, delivery, driver, and maintenance data? (y/n)?");
                     String confirm = scanner.nextLine().trim().toLowerCase();
                     if (confirm.equals("y")) {
-                        FileSaver.dumpSystemState(drivers, vehicles, deliveries, maintenanceRecords);
+                        fileSaverService.dumpSystemState(drivers, vehicles, deliveries, maintenanceRecords);
                         System.out.println("System state successfully saved.");
                     } else {
                         System.out.println("Operation cancelled.");

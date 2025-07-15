@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-public class FileSaver {
+public class FileSaverService {
 
-    public static void dumpSystemState(
+    public void dumpSystemState(
             List<Driver> drivers,
             List<Vehicle> vehicles,
             List<Delivery> deliveries,
