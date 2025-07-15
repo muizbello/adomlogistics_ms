@@ -3,13 +3,17 @@ package adomlogistics.main;
 import adomlogistics.model.Delivery;
 import adomlogistics.model.Driver;
 import adomlogistics.model.Vehicle;
+import adomlogistics.model.maintenanceRecord;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import adomlogistics.service.DeliveryService;
 import adomlogistics.service.DispatcherService;
 import adomlogistics.service.MaintenanceService;
 import adomlogistics.service.VehicleService;
+import adomlogistics.service.FileSaver;
 import adomlogistics.storage.Database;
 
 import java.sql.SQLException;
@@ -22,6 +26,11 @@ public class Main {
     private static Database database;
     private static Scanner scanner = new Scanner(System.in);
 
+    static List<Driver> drivers = new ArrayList<>();
+    static List<Vehicle> vehicles = new ArrayList<>();
+    static List<Delivery> deliveries = new ArrayList<>();
+    static List<maintenanceRecord> maintenanceRecords = new ArrayList<>();
+
     public static void main(String[] args) {
         try {
             // Initialize database connection
@@ -32,6 +41,7 @@ public class Main {
             vehicleService = new VehicleService(maintenanceService, database);
             dispatcher = new DispatcherService();
             deliveryService = new DeliveryService(100, dispatcher, vehicleService);
+
 
             // Load data
             loadSampleData();
@@ -86,7 +96,8 @@ public class Main {
             System.out.println("3. Manage Drivers");
             System.out.println("4. Maintenance");
             System.out.println("5. View Reports");
-            System.out.println("6. Exit");
+            System.out.println("6 Save System State to Files");
+            System.out.println("7. Exit");
             System.out.print("Select option: ");
 
             int choice = scanner.nextInt();
@@ -98,7 +109,8 @@ public class Main {
                 case 3: driverMenu(); break;
                 case 4: maintenanceMenu(); break;
                 case 5: reportsMenu(); break;
-                case 6:
+                case 6: filesavermenu(); break;
+                case 7:
                     System.out.println("Exiting system...");
                     return;
                 default:
@@ -436,7 +448,7 @@ public class Main {
                     }
                     break;
 
-                case 5:
+                case 6:
                     return;
 
                 default:
@@ -444,4 +456,37 @@ public class Main {
             }
         }
     }
+
+
+    public static void filesavermenu() {
+        while (true) {
+            System.out.println("\n=== File Save Menu ===");
+            System.out.println("1. Save System State to Files");
+            System.out.println("2. Back to Main Menu");
+            System.out.print("Select option: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine(); // Consume newline
+
+            switch (choice) {
+                case 1:
+                    System.out.print("\n Do you want to save all fleet, delivery, driver, and maintenance data? (y/n)?");
+                    String confirm = scanner.nextLine().trim().toLowerCase();
+                    if (confirm.equals("y")) {
+                        FileSaver.dumpSystemState(drivers, vehicles, deliveries, maintenanceRecords);
+                        System.out.println("System state successfully saved.");
+                    } else {
+                        System.out.println("Operation cancelled.");
+                    }
+                    break;
+
+                case 2:
+                    return;
+
+                default:
+                    System.out.println("Invalid choice! Please select a valid option.");
+            }
+        }
+    }
+
 }
